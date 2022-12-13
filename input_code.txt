@@ -1,0 +1,8 @@
+{this is a comment line in the sample program}
+read xy;
+read ab;
+if ab>xy
+ z :=ab-xy;
+else
+ z :=x y-a b ;
+write z;
