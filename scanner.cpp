@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-
+#include "scanner.hpp"
 using namespace std;
 /*All Tiny language reserved words stored for further use*/
 string Reserved_Words[] = { "if","then","else","end","repeat","until","read","write" };
@@ -21,6 +21,7 @@ bool is_letter(char c) {
 		return false;
 }
 
+/*Tokens to be return to parser*/
 bool is_digit(char c) {
 	if (c >= '0' && c <= '9')
 		return true;
@@ -76,8 +77,9 @@ bool is_space(char c) {
 		return false;
 }
 
-void getToken(string Code) {
-	string token;
+Token getToken(string Code) {
+	Token token;
+	
 	bool is_Reserved = false;
 	int currentChar = 0;
 	int symbolType = 0;
@@ -87,6 +89,7 @@ void getToken(string Code) {
 		switch (current_state) {
 		case START:
 			if (is_digit(Code[currentChar])) {
+				token.Type = "Number";
 				current_state = NUMBER;
 			}
 			else if (is_space(Code[currentChar])) {
@@ -97,17 +100,20 @@ void getToken(string Code) {
 					current_state = START;
 			}
 			else if (Code[currentChar] == ':') {
+				token.Type = "Assign";
 				current_state = ASSIGN;
 			}
 			else if (is_letter(Code[currentChar])) {
+				
 				current_state = ID;
 			}
 			else if (Code[currentChar] == '{') {
+				token.Type = "Comment";
 				currentChar++;
 				current_state = COMMENT;
 			}
 			else if (is_symbol(Code[currentChar])) {
-
+				token.Type = "Symbol";
 				current_state = SYMBOL;
 
 			}
@@ -115,6 +121,7 @@ void getToken(string Code) {
 			break;
 
 		case NUMBER:
+			
 			for (int i = currentChar ; ((!is_space(Code[i])) && (!is_symbol(Code[i]))) ; i++)
 			{
 				if (!is_digit(Code[i])) {
@@ -126,11 +133,12 @@ void getToken(string Code) {
 				break;
 			}
 			while (is_digit(Code[currentChar])) {
-				token += Code[currentChar];
+				token.Value += Code[currentChar];
 				currentChar++;
 			}
-			cout << token << ", " << "number" << endl;
-			token = "";
+			cout << token.Value << ", " << "number" << endl;
+			return token;
+			token.Value = "";
 			if (currentChar == Code.length())
 				current_state = END;
 			else
@@ -149,19 +157,24 @@ void getToken(string Code) {
 				break;
 			}
 			while (is_letter(Code[currentChar]) && !is_space(Code[currentChar])) {
-				token += Code[currentChar];
+				token.Value += Code[currentChar];
 				currentChar++;
 			}
 			for (int currentChar = 0; currentChar < 8; currentChar++)
 			{
-				if (Reserved_Words[currentChar] == token)
+				if (Reserved_Words[currentChar] == token.Value)
 					is_Reserved = true;
 			}
-			if (is_Reserved)
-				cout << token << ", " << "Reserved Word" << endl;
-			else
-				cout << token << ", " << "Identifier" << endl;
-			token = "";
+			if (is_Reserved){
+				cout << token.Value << ", " << "Reserved Word" << endl;
+				token.Type = "Reserved Word";
+			}
+			else{
+				cout << token.Value << ", " << "Identifier" << endl;
+				token.Type = "Identifier";
+			}
+			return token;
+			token.Value = "";
 			is_Reserved = false;
 			if (currentChar == Code.length())
 				current_state = END;
@@ -200,37 +213,38 @@ void getToken(string Code) {
 			symbolType = symbol_type(Code[currentChar]);
 			switch (symbolType) {
 			case SEMICOLON:
-				type = "semicolon";
+				token.Type = "semicolon";
 				break;
 			case LESSTHAN:
-				type = "less than";
+				token.Type = "less than";
 				break;
 			case GREATERTHAN:
-				type = "greater than";
+				token.Type = "greater than";
 				break;
 			case EQUAL:
-				type = "equal";
+				token.Type = "equal";
 				break;
 			case PLUS:
-				type = "plus";
+				token.Type = "plus";
 				break;
 			case MINUS:
-				type = "minus";
+				token.Type = "minus";
 				break;
 			case MULT:
-				type = "mult";
+				token.Type = "mult";
 				break;
 			case DIV:
-				type = "div";
+				token.Type = "div";
 				break;
 			case OPENBRACKET:
-				type = "open bracket";
+				token.Type = "open bracket";
 				break;
 			case CLOSEDBRACKET:
-				type = "closed bracket";
+				token.Type = "closed bracket";
 				break;
 			}
-			cout << Code[currentChar] << ", " << type << endl;
+			cout << Code[currentChar] << ", " << token.Type << endl;
+			return token;
 			currentChar++;
 			if (currentChar == Code.length())
 				current_state = END;
@@ -252,6 +266,14 @@ void getToken(string Code) {
 	}
 
 
+}
+vector<Token> getTokenList(string input){
+	vector<Token> tokens;
+	int index = 0;
+	while((index < (input.length()-1))){
+		tokens.push_back(getToken(input));
+	}
+	return tokens;
 }
 
 int main(int argc, char* argv[]) {
