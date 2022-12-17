@@ -9,6 +9,9 @@ string Reserved_Words[] = { "if","then","else","end","repeat","until","read","wr
 /*The State machine states to be traversed on*/
 enum Allstates { START, COMMENT, NUMBER, ID, ASSIGN, SYMBOL, ERROR, END };
 
+/*The RESERVED words types*/
+enum Allreserved { IF, THEN, ELSE, ENDWORD, REPEAT, UNTIL, READ, WRITE};
+
 /*The special symbols types*/
 enum Alltypes { SEMICOLON, LESSTHAN, GREATERTHAN, EQUAL, PLUS, MINUS, MULT, DIV, OPENBRACKET, CLOSEDBRACKET };
 Allstates current_state = START;//global variable to store the current state
@@ -34,6 +37,34 @@ bool is_symbol(char c) {
 		return true;
 	else
 		return false;
+}
+
+int reserved_type(string str){
+	if(str == "if"){
+		return IF;
+	}
+	else if(str == "then"){
+		return THEN;
+	}
+	else if(str == "else"){
+		return ELSE;
+	}
+	else if(str == "end"){
+		return ENDWORD;
+	}
+	else if(str == "repeat"){
+		return REPEAT;
+	}
+	else if(str == "until"){
+		return UNTIL;
+	}
+	else if(str == "read"){
+		return READ;
+	}
+	else if(str == "write"){
+		return WRITE;
+	}
+	return 100;
 }
 
 int symbol_type(char c) {
@@ -82,6 +113,7 @@ Token getToken(string Code) {
 	
 	bool is_Reserved = false;
 	int currentChar = 0;
+	int reservedType = 0;
 	int symbolType = 0;
 	string type;
 	/*State machine implementation and transitions are based on current character*/
@@ -89,7 +121,7 @@ Token getToken(string Code) {
 		switch (current_state) {
 		case START:
 			if (is_digit(Code[currentChar])) {
-				token.Type = "Number";
+				token.Type = "NUMBER";
 				current_state = NUMBER;
 			}
 			else if (is_space(Code[currentChar])) {
@@ -100,7 +132,7 @@ Token getToken(string Code) {
 					current_state = START;
 			}
 			else if (Code[currentChar] == ':') {
-				token.Type = "Assign";
+				token.Type = "ASSIGN";
 				current_state = ASSIGN;
 			}
 			else if (is_letter(Code[currentChar])) {
@@ -108,7 +140,7 @@ Token getToken(string Code) {
 				current_state = ID;
 			}
 			else if (Code[currentChar] == '{') {
-				token.Type = "Comment";
+				token.Type = "COMMENT";
 				currentChar++;
 				current_state = COMMENT;
 			}
@@ -136,7 +168,7 @@ Token getToken(string Code) {
 				token.Value += Code[currentChar];
 				currentChar++;
 			}
-			cout << token.Value << ", " << "number" << endl;
+			cout << token.Value << ", " << "NUMBER" << endl;
 			token.Value = "";
 			if (currentChar == Code.length())
 				current_state = END;
@@ -166,12 +198,35 @@ Token getToken(string Code) {
 					is_Reserved = true;
 			}
 			if (is_Reserved){
-				cout << token.Value << ", " << "Reserved Word" << endl;
-				token.Type = "Reserved Word";
+				reservedType = reserved_type(token.Value);
+				switch (reservedType) {
+				case IF:
+					token.Type = "IF";
+					break;
+				case THEN:
+					token.Type = "THEN";
+					break;
+				case ENDWORD:
+					token.Type = "END";
+					break;
+				case REPEAT:
+					token.Type = "REPEAT";
+					break;
+				case UNTIL:
+					token.Type = "UNTIL";
+					break;
+				case READ:
+					token.Type = "READ";
+					break;
+				case WRITE:
+					token.Type = "WRITE";
+					break;
+			}
+			cout << token.Value << ", " << token.Type << endl;
 			}
 			else{
-				cout << token.Value << ", " << "Identifier" << endl;
-				token.Type = "Identifier";
+				cout << token.Value << ", " << "IDENTIFIER" << endl;
+				token.Type = "IDENTIFIER";
 			}
 			token.Value = "";
 			is_Reserved = false;
@@ -198,7 +253,7 @@ Token getToken(string Code) {
 		case ASSIGN:
 			if (Code[currentChar] == ':') {
 				currentChar += 2;
-				cout << ":=" << ", " << "assign" << endl;
+				cout << ":=" << ", " << "ASSIGN" << endl;
 				/*return to start case to handle next character state*/
 				current_state = START;
 			}
@@ -213,34 +268,34 @@ Token getToken(string Code) {
 			symbolType = symbol_type(Code[currentChar]);
 			switch (symbolType) {
 			case SEMICOLON:
-				token.Type = "semicolon";
+				token.Type = "SEMICOLON";
 				break;
 			case LESSTHAN:
-				token.Type = "less than";
+				token.Type = "LESS THAN";
 				break;
 			case GREATERTHAN:
-				token.Type = "greater than";
+				token.Type = "GREATER THAN";
 				break;
 			case EQUAL:
-				token.Type = "equal";
+				token.Type = "EQUAL";
 				break;
 			case PLUS:
-				token.Type = "plus";
+				token.Type = "PLUS";
 				break;
 			case MINUS:
-				token.Type = "minus";
+				token.Type = "MINUS";
 				break;
 			case MULT:
-				token.Type = "mult";
+				token.Type = "MULT";
 				break;
 			case DIV:
-				token.Type = "div";
+				token.Type = "DIV";
 				break;
 			case OPENBRACKET:
-				token.Type = "open bracket";
+				token.Type = "OPENBRACKET";
 				break;
 			case CLOSEDBRACKET:
-				token.Type = "closed bracket";
+				token.Type = "CLOSEDBRACKET";
 				break;
 			}
 			cout << Code[currentChar] << ", " << token.Type << endl;
