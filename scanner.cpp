@@ -137,13 +137,13 @@ Token getToken(string Code) {
 				currentChar++;
 			}
 			cout << token.Value << ", " << "number" << endl;
-			return token;
 			token.Value = "";
 			if (currentChar == Code.length())
 				current_state = END;
 			else
 				current_state = START;
 			break;
+			return token;
 
 		case ID:
 			for (int i = currentChar ; ((!is_space(Code[i])) && (!is_symbol(Code[i]))) ; i++)
@@ -173,7 +173,6 @@ Token getToken(string Code) {
 				cout << token.Value << ", " << "Identifier" << endl;
 				token.Type = "Identifier";
 			}
-			return token;
 			token.Value = "";
 			is_Reserved = false;
 			if (currentChar == Code.length())
@@ -181,6 +180,7 @@ Token getToken(string Code) {
 			else
 				current_state = START;
 			break;
+			return token;
 
 		case COMMENT:
 			if (current_state == COMMENT) {
@@ -244,13 +244,13 @@ Token getToken(string Code) {
 				break;
 			}
 			cout << Code[currentChar] << ", " << token.Type << endl;
-			return token;
 			currentChar++;
 			if (currentChar == Code.length())
 				current_state = END;
 			else
 				current_state = START;
 			break;
+			return token;
 		case ERROR:
 			cout<<"ERROR"<<endl;
 			current_state = END;
@@ -264,8 +264,6 @@ Token getToken(string Code) {
 
 		}
 	}
-
-
 }
 vector<Token> getTokenList(string input){
 	vector<Token> tokens;
