@@ -153,17 +153,6 @@ Token getToken(string Code) {
 			break;
 
 		case NUMBER:
-			
-			for (int i = currentChar ; ((!is_space(Code[i])) && (!is_symbol(Code[i]))) ; i++)
-			{
-				if (!is_digit(Code[i])) {
-					current_state = ERROR;
-					break;
-				}
-			} 
-			if (current_state == ERROR) {
-				break;
-			}
 			while (is_digit(Code[currentChar])) {
 				token.Value += Code[currentChar];
 				currentChar++;
@@ -178,16 +167,6 @@ Token getToken(string Code) {
 			return token;
 
 		case ID:
-			for (int i = currentChar ; ((!is_space(Code[i])) && (!is_symbol(Code[i]))) ; i++)
-			{
-				if (!is_letter(Code[i])) {
-					current_state = ERROR;
-					break;
-				}
-			}
-			if (current_state == ERROR) {
-				break;
-			}
 			while (is_letter(Code[currentChar]) && !is_space(Code[currentChar])) {
 				token.Value += Code[currentChar];
 				currentChar++;
