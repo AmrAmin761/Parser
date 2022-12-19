@@ -135,3 +135,161 @@ SyntaxTree* exp (vector<Token> Tokens){
     return c1;
 }
 
+//comparison-op -> < | =
+
+
+SyntaxTree* comparison_op (vector<Token> Tokens){
+    Token x;
+    if (index < Tokens.size())
+        x = Tokens[index];
+    SyntaxTree *current = NULL;
+    if(x.Type == "LESSTHAN"){
+        current = new SyntaxTree();
+        current->setType(OPERATOR_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("LESSTHAN",Tokens);
+    }
+    else if(x.Type == "EQUAL"){
+        current = new SyntaxTree();
+        current->setType(OPERATOR_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("EQUAL",Tokens);
+    }
+    else{
+        error = true;
+    }
+    return current;
+}
+
+//simple-exp -> term {addop term}
+
+SyntaxTree* simple_exp(vector<Token> Tokens){
+    SyntaxTree *current, *c1 = term(Tokens), *c2;
+    Token x;
+    if(index<Tokens.size()){
+        x=Tokens[index];
+    }
+    while (x.Type=="PLUS" || x.Type == "MINUS")
+    {
+        current = addop(Tokens);
+        current->addChild(c1);
+        c2 = term(Tokens);
+        current->addChild(c2);
+        c1 = current;
+        if(index<Tokens.size()){
+            x=Tokens[index];
+        }
+        else{
+            break;
+        }
+    }
+    return c1;
+}
+
+//addop -> + | -
+
+SyntaxTree* addop(vector<Token> Tokens){
+    Token x;
+    if(index<Tokens.size()){
+        x = Tokens[index];
+    }
+    SyntaxTree *current = NULL;
+    if(x.Type == "PLUS"){
+        current = new SyntaxTree();
+        current->setType(OPERATOR_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("PLUS",Tokens);
+    }
+    else if(x.Type == "MINUS"){
+        current = new SyntaxTree();
+        current->setType(OPERATOR_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("MINUS",Tokens);
+    }
+    else{
+        error = true;
+    }
+    return current;
+}
+
+//term -> factor {mulop factor}
+
+SyntaxTree* term(vector<Token> Tokens){
+    SyntaxTree *current, *c1 = factor(Tokens), *c2;
+    Token x;
+    if(index<Tokens.size()){
+        x=Tokens[index];
+    }
+    while (x.Type=="MULT" || x.Type == "DIV")
+    {
+        current = mulop(Tokens);
+        current->addChild(c1);
+        c2 = factor(Tokens);
+        current->addChild(c2);
+        c1 = current;
+        if(index<Tokens.size()){
+            x=Tokens[index];
+        }
+        else{
+            break;
+        }
+    }
+    return c1;
+}
+
+//mulop -> * | /
+
+SyntaxTree* mulop(vector<Token> Tokens){
+    Token x;
+    if(index<Tokens.size()){
+        x = Tokens[index];
+    }
+    SyntaxTree *current = NULL;
+    if(x.Type == "MULT"){
+        current = new SyntaxTree();
+        current->setType(OPERATOR_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("MULT",Tokens);
+    }
+    else if(x.Type == "DIV"){
+        current = new SyntaxTree();
+        current->setType(OPERATOR_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("DIV",Tokens);
+    }
+    else{
+        error = true;
+    }
+    return current; 
+}
+
+//factor -> (exp) | number | identifier
+
+SyntaxTree* factor(vector<Token> Tokens){
+    Token x;
+    if(index<Tokens.size()){
+        x = Tokens[index];
+    }
+    SyntaxTree *current = NULL;
+    if(x.Type == "OPENBRACKET"){
+        match("OPENBRACKET",Tokens);
+        current=exp(Tokens);
+        match("CLOSEDBRACKET",Tokens);
+    }
+    else if (x.Type == "NUMBER"){
+        current = new SyntaxTree();
+        current->setType(CONSTANT_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("NUMBER",Tokens);
+    }
+    else if (x.Type == "IDENTIFIER"){
+        current = new SyntaxTree();
+        current->setType(IDENTIFIER_EXPRESSION);
+        current->setValue(Tokens[index].Value);
+        match("IDENTIFIER",Tokens);
+    }
+    else{
+        error = true;
+    }
+    return current;
+}
