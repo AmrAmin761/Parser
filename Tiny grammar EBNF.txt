@@ -1,0 +1,15 @@
+1- program -> stmt-sequence
+2- stmt-sequence -> statement{;statement}
+3- statement -> if- stmt | repeat-stmt | assign-stmt | read-stmt | write-stmt
+4- if -stmt -> if exp then stmt-sequence [else statment] end
+5- repeat -stmt -> repeat stmt-sequence until exp
+6- assign -stmt -> identifier := exp
+7- read -stmt -> read identifier
+8- write -stmt -> write exp
+9- exp -> simple-exp [comparison-op simple-exp]
+10- comparison-op -> < | =
+11- simple-exp -> term {addop term}
+12- addop -> + | -
+13- term -> factor {mulop factor}
+14- mulop -> * | /
+15- factor -> (exp) | number | identifier
