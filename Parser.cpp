@@ -5,15 +5,24 @@ unsigned int index = 0;
 Token token;
 bool error = false;
 set<int> err;
-void match(string input, vector<Token> Tokens){//needs to be refactored 
+void match(string input, vector<Token> Tokens){ 
     if(input == Tokens[index].Type){
         index++;
     }
-    else
+    else{
         error = true;
+        err.insert(index);
+    }
 
 }
 
+
+Parser::Parser()
+{
+    count = 0;
+    file = "";
+    error = false;
+}
 
 SyntaxTree* stmt_sequence (vector<Token> Tokens){
     SyntaxTree *seq = new SyntaxTree();
@@ -26,7 +35,7 @@ SyntaxTree* stmt_sequence (vector<Token> Tokens){
     }
     while (x.Type == "SEMICOLON" && index != Tokens.size()-1){
         match("SEMICOLON",Tokens);
-        current->getSibling(statement(Tokens));
+        current->setSibling(statement(Tokens));
         current = current->getSibling();
         if(index<Tokens.size()){
             x = Tokens[index];
@@ -81,6 +90,10 @@ SyntaxTree* write_stmt (vector<Token> Tokens){
 
 SyntaxTree* Parser::program (vector<Token> Tokens){
     SyntaxTree* node = stmt_sequence(Tokens);
+     if (index < Tokens.size()) {
+        error = true;
+        err.insert(index);
+    }
     return node;
 }
 
@@ -97,7 +110,10 @@ SyntaxTree* statement (vector<Token> Tokens){
         node = read_stmt(Tokens);
     else if (current_token.Type == "WRITE")
         node = write_stmt(Tokens);
-
+    else{
+        error = true;
+        err.insert(index);
+    }
     return node;
 }
 
@@ -157,6 +173,7 @@ SyntaxTree* comparison_op (vector<Token> Tokens){
     }
     else{
         error = true;
+        err.insert(index);
     }
     return current;
 }
@@ -208,6 +225,7 @@ SyntaxTree* addop(vector<Token> Tokens){
     }
     else{
         error = true;
+        err.insert(index);
     }
     return current;
 }
@@ -259,6 +277,7 @@ SyntaxTree* mulop(vector<Token> Tokens){
     }
     else{
         error = true;
+        err.insert(index);
     }
     return current; 
 }
@@ -290,6 +309,7 @@ SyntaxTree* factor(vector<Token> Tokens){
     }
     else{
         error = true;
+        err.insert(index);
     }
     return current;
 }
