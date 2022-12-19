@@ -19,8 +19,6 @@ void match(string input, vector<Token> Tokens){
 
 Parser::Parser()
 {
-    count = 0;
-    file = "";
     error = false;
 }
 
