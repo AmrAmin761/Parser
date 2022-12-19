@@ -14,13 +14,13 @@ private:
     int count;
     string file;
     void drawTree(SyntaxTree*);
-    SyntaxTree* stmt_sequence (vector<Token>);
+    SyntaxTree* stmt_sequence (vector<Token> Tokens);
     SyntaxTree* statement (vector<Token>);
-    SyntaxTree* if_stmt (vector<Token>);
+    SyntaxTree* if_stmt (vector<Token> Tokens);
     SyntaxTree* repeat_stmt (vector<Token>);
     SyntaxTree* assign_stmt (vector<Token>);
-    SyntaxTree* read_stmt (vector<Token>);
-    SyntaxTree* write_stmt (vector<Token>);
+    SyntaxTree* read_stmt (vector<Token> Tokens);
+    SyntaxTree* write_stmt (vector<Token> Tokens);
     SyntaxTree* exp (vector<Token>);
     SyntaxTree* comparison_op (vector<Token>);
     SyntaxTree* simple_exp(vector<Token>);
