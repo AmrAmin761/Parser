@@ -22,6 +22,15 @@ Parser::Parser()
     error = false;
 }
 
+SyntaxTree* Parser::program (vector<Token> Tokens){
+    SyntaxTree* node = stmt_sequence(Tokens);
+     if (index < Tokens.size()) {
+        error = true;
+        err.insert(index);
+    }
+    return node;
+}
+
 SyntaxTree* stmt_sequence (vector<Token> Tokens){
     SyntaxTree *seq = new SyntaxTree();
     seq = statement(Tokens);
@@ -86,14 +95,7 @@ SyntaxTree* write_stmt (vector<Token> Tokens){
     return current;
 }
 
-SyntaxTree* Parser::program (vector<Token> Tokens){
-    SyntaxTree* node = stmt_sequence(Tokens);
-     if (index < Tokens.size()) {
-        error = true;
-        err.insert(index);
-    }
-    return node;
-}
+
 
 SyntaxTree* statement (vector<Token> Tokens){
     SyntaxTree* node = NULL;
