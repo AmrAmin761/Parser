@@ -14,7 +14,6 @@ private:
     int count;
     string file;
     void drawTree(SyntaxTree*);
-    void parseString(string code);
     SyntaxTree* stmt_sequence (vector<Token> Tokens);
     SyntaxTree* statement (vector<Token> Tokens);
     SyntaxTree* if_stmt (vector<Token> Tokens);
@@ -29,6 +28,8 @@ private:
     SyntaxTree* term(vector<Token> Tokens);
     SyntaxTree* mulop(vector<Token> Tokens);
     SyntaxTree* factor(vector<Token> Tokens);
+    void parseString(string code);
     const SyntaxTree *getOutputTree() const;
+
 
 };

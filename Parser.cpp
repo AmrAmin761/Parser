@@ -313,3 +313,6 @@ SyntaxTree* factor(vector<Token> Tokens){
     }
     return current;
 }
+void parseString(string code){
+    outputTree = Parser::program(getTokenList(code));
+}
