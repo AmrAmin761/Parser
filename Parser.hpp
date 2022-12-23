@@ -14,6 +14,7 @@ private:
     int count;
     string file;
     void drawTree(SyntaxTree*);
+    void parseString(string code);
     SyntaxTree* stmt_sequence (vector<Token> Tokens);
     SyntaxTree* statement (vector<Token> Tokens);
     SyntaxTree* if_stmt (vector<Token> Tokens);
